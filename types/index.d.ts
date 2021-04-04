@@ -39,7 +39,7 @@ declare namespace sendr {
 	export type Query = Record<string, Value | null | undefined>
 
 	/**
-	 * Ignore response cookies in cross-origin requests.
+	 * Include credentials in cross-origin requests.
 	 */
 	export type Credentials = boolean
 
@@ -97,7 +97,7 @@ declare namespace sendr {
 		query(query: Query): Request
 
 		/**
-		 * Set the request credentials mode.
+		 * Include credentials in cross-origin requests.
 		 */
 		credentials(credentials: Credentials): Request
 
@@ -108,7 +108,7 @@ declare namespace sendr {
 		headers(headers: RequestHeaders): Request
 
 		/**
-		 * Set the request body
+		 * Set the request body.
 		 */
 		body(body: Body): Request
 
@@ -124,7 +124,15 @@ declare namespace sendr {
 	}
 
 	export interface FutureResponse<Data> extends Promise<Response<Data>> {
+		/**
+		 * Listen for the progress of the request.
+		 */
 		progress(progress: Progress): FutureResponse<Data>
+
+		/**
+		 * Abort the request.
+		 * Causes the request to fail with code `aborted`.
+		 */
 		abort(): void
 	}
 
