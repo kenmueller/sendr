@@ -24,6 +24,16 @@ declare namespace sendr {
 		| 'patch'
 
 	/**
+	 * Path segment.
+	 */
+	export type Path = Value
+
+	/**
+	 * URL parameters.
+	 */
+	export type Params = Record<string, Value | null | undefined>
+
+	/**
 	 * Query paramters in the URL.
 	 */
 	export type Query = Record<string, Value | null | undefined>
@@ -35,7 +45,6 @@ declare namespace sendr {
 
 	/**
 	 * Headers that you can pass into the request.
-	 * Make the value `null` or `undefined` to remove it.
 	 */
 	export type RequestHeaders = Record<string, Value | null | undefined>
 
@@ -65,11 +74,52 @@ declare namespace sendr {
 	export type Progress = (current: number, total: number) => void
 
 	export interface Request {
+		/**
+		 * Append to the request URL.
+		 */
+		path(...paths: Path[]): Request
+
+		/**
+		 * Add or remove URL parameters.
+		 * Set the value to `null` or `undefined` to remove them.
+		 */
+		params(params: Params): Request
+
+		/**
+		 * Set the request method.
+		 */
 		method(method: Method): Request
+
+		/**
+		 * Add or remove query parameters.
+		 * Set the value to `null` or `undefined` to remove them.
+		 */
 		query(query: Query): Request
+
+		/**
+		 * Set the request credentials mode.
+		 */
 		credentials(credentials: Credentials): Request
+
+		/**
+		 * Add or remove headers.
+		 * Set the value to `null` or `undefined` to remove them.
+		 */
 		headers(headers: RequestHeaders): Request
+
+		/**
+		 * Set the request body
+		 */
 		body(body: Body): Request
+
+		/**
+		 * Set the response type.
+		 */
+		type(type: ResponseType): Request
+
+		/**
+		 * Send the request.
+		 */
 		send<Data>(): FutureResponse<Data>
 	}
 

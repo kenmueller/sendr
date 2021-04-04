@@ -1,11 +1,12 @@
 import sendr from '../../types'
 import RequestOptions, { DEFAULT_REQUEST_OPTIONS } from './options'
 import futureResponse from '../response/future'
+import join from '../url/join'
 
 export default class Request implements sendr.Request {
 	constructor(
 		private readonly url: string,
-		private readonly options: RequestOptions = DEFAULT_REQUEST_OPTIONS
+		private readonly options: Readonly<RequestOptions> = DEFAULT_REQUEST_OPTIONS
 	) {}
 
 	private readonly map = (options: Partial<RequestOptions>) =>
@@ -20,6 +21,11 @@ export default class Request implements sendr.Request {
 
 		return url.href
 	}
+
+	readonly path = (...paths: sendr.Path[]) =>
+		new Request(join(this.url, ...paths), { ...this.options })
+
+	readonly params = (params: sendr.Params) => this
 
 	readonly method = (method: sendr.Method) => this.map({ method })
 
