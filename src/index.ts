@@ -1,6 +1,6 @@
 import _sendr from '../types'
-import Error from './error'
 import Request from './request'
+import Error from './error'
 
 const sendr: typeof _sendr = url => new Request(url)
 
