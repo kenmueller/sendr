@@ -25,7 +25,7 @@ export default class Request implements sendr.Request {
 	}
 
 	readonly path = (...paths: sendr.Path[]) =>
-		new Request(joinPaths(this.url, ...paths), { ...this.options })
+		new Request(joinPaths(this.url, ...paths), this.options)
 
 	readonly params = (params: sendr.Params) =>
 		this.map({ params: { ...this.options.params, ...params } })
