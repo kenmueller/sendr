@@ -1,6 +1,7 @@
 {
 	"name": "sendr",
-	"version": "1.0.1",
+	"description": "Reusable & declarative queries",
+	"version": "1.0.2",
 	"main": "lib/index.js",
 	"types": "types/index.d.ts",
 	"scripts": {
@@ -16,5 +17,31 @@
 		"prettier": "^2.2.1",
 		"ts-node-dev": "^1.1.6",
 		"typescript": "^4.2.3"
-	}
+	},
+	"keywords": [
+		"sendr",
+		"send",
+		"request",
+		"query",
+		"header",
+		"progress",
+		"fetch",
+		"xmlhttprequest",
+		"http"
+	],
+	"homepage": "https://github.com/kenmueller/sendr#readme",
+	"bugs": {
+		"url": "https://github.com/kenmueller/sendr/issues",
+		"email": "kenmueller0@gmail.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/kenmueller/sendr.git"
+	},
+	"author": {
+		"name": "Ken Mueller",
+		"email": "kenmueller0@gmail.com",
+		"url": "https://github.com/kenmueller"
+	},
+	"license": "MIT"
 }
