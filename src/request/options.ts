@@ -5,7 +5,8 @@ export default interface RequestOptions {
 	query: sendr.Query
 	credentials: sendr.Credentials
 	headers: sendr.RequestHeaders
-	body: sendr.Body | null
+	body: sendr.Body
+	type: sendr.ResponseType
 }
 
 export const DEFAULT_REQUEST_OPTIONS: RequestOptions = {
@@ -13,5 +14,6 @@ export const DEFAULT_REQUEST_OPTIONS: RequestOptions = {
 	query: {},
 	credentials: false,
 	headers: {},
-	body: null
+	body: null,
+	type: 'text'
 }

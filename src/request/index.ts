@@ -21,36 +21,27 @@ export default class Request implements sendr.Request {
 		return url.href
 	}
 
-	readonly method = (method: sendr.Method) =>
-		this.map({
-			method
-		})
+	readonly method = (method: sendr.Method) => this.map({ method })
 
 	readonly query = (query: sendr.Query) =>
-		this.map({
-			query: { ...this.options.query, ...query }
-		})
+		this.map({ query: { ...this.options.query, ...query } })
 
 	readonly credentials = (credentials: sendr.Credentials) =>
-		this.map({
-			credentials
-		})
+		this.map({ credentials })
 
 	readonly headers = (headers: sendr.RequestHeaders) =>
-		this.map({
-			headers: { ...this.options.headers, ...headers }
-		})
+		this.map({ headers: { ...this.options.headers, ...headers } })
 
-	readonly body = (body: sendr.Body) =>
-		this.map({
-			body
-		})
+	readonly body = (body: sendr.Body) => this.map({ body })
+
+	readonly type = (type: sendr.ResponseType) => this.map({ type })
 
 	readonly send = <Data>() => {
-		const { method, credentials, headers, body } = this.options
+		const { method, credentials, headers, body, type } = this.options
 		const request = new XMLHttpRequest()
 
 		request.withCredentials = credentials
+		request.responseType = type
 
 		for (const [name, value] of Object.entries(headers))
 			if (!(value === null || value === undefined))

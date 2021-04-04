@@ -47,7 +47,17 @@ declare namespace sendr {
 	/**
 	 * The request body.
 	 */
-	export type Body = BodyInit | null | undefined
+	export type Body = BodyInit | Document | null | undefined
+
+	/**
+	 * The response type.
+	 */
+	export type ResponseType =
+		| 'arraybuffer'
+		| 'blob'
+		| 'document'
+		| 'json'
+		| 'text'
 
 	/**
 	 * Keep track of the request's progress.
