@@ -125,7 +125,7 @@ sendr('https://jsonplaceholder.typicode.com/todos/:id')
 
 ## Publishers
 
-## `send`
+### `send`
 
 Send the request. Returns a `Promise` containing the response.
 
@@ -135,7 +135,7 @@ function send<Data>(): sendr.FutureResponse<Data>
 const { data } = await sendr('/users/ken.png').send()
 ```
 
-## `progress`
+### `progress`
 
 Listen for the progress of the request.
 
@@ -149,7 +149,7 @@ const { data } = await sendr('/users/ken.png')
 	})
 ```
 
-## `abort`
+### `abort`
 
 Abort the request. Causes the request to fail with code `aborted`.
 
