@@ -15,7 +15,7 @@ export default class Request implements sendr.Request {
 
 	private readonly resolvedUrl = () => {
 		const { params, query } = this.options
-		const url = new URL(this.url)
+		const url = new URL(this.url, window.location.href)
 
 		for (const [name, value] of Object.entries(query))
 			if (!(value === null || value === undefined))
