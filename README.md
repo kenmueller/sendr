@@ -3,8 +3,8 @@
 ```ts
 const { data } = await sendr('http://localhost:3000/user/:id')
 	.method('post')
-	.params({ id: 'ken' })
 	.path('/profile')
+	.params({ id: 'ken' })
 	.query({ name: 'ken' })
 	.query({ age: 15 })
 	.headers({ 'content-type': 'application/json' })

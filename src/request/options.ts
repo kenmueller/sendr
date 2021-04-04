@@ -1,6 +1,7 @@
 import sendr from '../../types'
 
 export default interface RequestOptions {
+	params: sendr.Params
 	method: sendr.Method
 	query: sendr.Query
 	credentials: sendr.Credentials
@@ -10,6 +11,7 @@ export default interface RequestOptions {
 }
 
 export const DEFAULT_REQUEST_OPTIONS: RequestOptions = {
+	params: {},
 	method: 'get',
 	query: {},
 	credentials: false,

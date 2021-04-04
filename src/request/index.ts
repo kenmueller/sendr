@@ -1,7 +1,8 @@
 import sendr from '../../types'
 import RequestOptions, { DEFAULT_REQUEST_OPTIONS } from './options'
 import futureResponse from '../response/future'
-import join from '../url/join'
+import joinPaths from '../url/join'
+import resolveUrl from '../url/resolve'
 
 export default class Request implements sendr.Request {
 	constructor(
@@ -12,20 +13,22 @@ export default class Request implements sendr.Request {
 	private readonly map = (options: Partial<RequestOptions>) =>
 		new Request(this.url, { ...this.options, ...options })
 
-	private readonly urlWithQuery = () => {
+	private readonly resolvedUrl = () => {
+		const { params, query } = this.options
 		const url = new URL(this.url)
 
-		for (const [name, value] of Object.entries(this.options.query))
+		for (const [name, value] of Object.entries(query))
 			if (!(value === null || value === undefined))
 				url.searchParams.append(name, value.toString())
 
-		return url.href
+		return resolveUrl(url.href, params)
 	}
 
 	readonly path = (...paths: sendr.Path[]) =>
-		new Request(join(this.url, ...paths), { ...this.options })
+		new Request(joinPaths(this.url, ...paths), { ...this.options })
 
-	readonly params = (params: sendr.Params) => this
+	readonly params = (params: sendr.Params) =>
+		this.map({ params: { ...this.options.params, ...params } })
 
 	readonly method = (method: sendr.Method) => this.map({ method })
 
@@ -55,7 +58,7 @@ export default class Request implements sendr.Request {
 
 		const response = futureResponse<Data>(request)
 
-		request.open(method.toUpperCase(), this.urlWithQuery())
+		request.open(method.toUpperCase(), this.resolvedUrl())
 		request.send(body)
 
 		return response
