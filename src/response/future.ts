@@ -6,7 +6,8 @@ const futureResponse = <Data>(request: XMLHttpRequest) => {
 	const progressListeners: sendr.Progress[] = []
 
 	request.addEventListener('progress', ({ loaded, total }) => {
-		for (const progress of progressListeners) progress(loaded, total)
+		const current = Math.min(loaded, total)
+		for (const progress of progressListeners) progress(current, total)
 	})
 
 	const response = new Promise((resolve, reject) => {

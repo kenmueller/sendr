@@ -1,5 +1,7 @@
 # sendr
 
+> Reusable & declarative queries
+
 ```ts
 const { data } = await sendr('http://localhost:3000/user/:id')
 	.method('post')
