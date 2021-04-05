@@ -51,7 +51,7 @@ declare namespace sendr {
 	/**
 	 * Headers that are sent back from a response.
 	 */
-	export type ResponseHeaders = Record<string, string>
+	export type ResponseHeaders = Record<string, string | string[]>
 
 	/**
 	 * The request body.
@@ -62,6 +62,7 @@ declare namespace sendr {
 	 * The response type.
 	 */
 	export type ResponseType =
+		| 'buffer'
 		| 'arraybuffer'
 		| 'blob'
 		| 'document'

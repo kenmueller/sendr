@@ -1,21 +1,19 @@
 import sendr from '../../types'
 import RequestOptions, { DEFAULT_REQUEST_OPTIONS } from './options'
-import futureResponse from '../response/future'
+import isBrowser from '../is/browser'
 import joinPaths from '../url/join'
 import resolveUrl from '../url/resolve'
+import Send from '../send'
 
-export default class Request implements sendr.Request {
+class Request implements sendr.Request {
 	constructor(
-		private readonly url: string,
-		private readonly options: Readonly<RequestOptions> = DEFAULT_REQUEST_OPTIONS
+		readonly url: string,
+		readonly options: Readonly<RequestOptions> = DEFAULT_REQUEST_OPTIONS
 	) {}
 
-	private readonly map = (options: Partial<RequestOptions>) =>
-		new Request(this.url, { ...this.options, ...options })
-
-	private readonly resolvedUrl = () => {
+	get resolvedUrl() {
 		const { params, query } = this.options
-		const url = new URL(this.url, window.location.href)
+		const url = new URL(this.url, isBrowser ? window.location.href : undefined)
 
 		for (const [name, value] of Object.entries(query))
 			if (!(value === null || value === undefined))
@@ -23,6 +21,9 @@ export default class Request implements sendr.Request {
 
 		return resolveUrl(url.href, params)
 	}
+
+	readonly map = (options: Partial<RequestOptions>) =>
+		new Request(this.url, { ...this.options, ...options })
 
 	readonly path = (...paths: sendr.Path[]) =>
 		new Request(joinPaths(this.url, ...paths), this.options)
@@ -46,21 +47,12 @@ export default class Request implements sendr.Request {
 	readonly type = (type: sendr.ResponseType) => this.map({ type })
 
 	readonly send = <Data>() => {
-		const { method, credentials, headers, body, type } = this.options
-		const request = new XMLHttpRequest()
+		const send: Send = isBrowser
+			? require('../send/browser')
+			: __non_webpack_require__('./send/node')
 
-		request.withCredentials = credentials
-		request.responseType = type
-
-		for (const [name, value] of Object.entries(headers))
-			if (!(value === null || value === undefined))
-				request.setRequestHeader(name, value.toString())
-
-		const response = futureResponse<Data>(request)
-
-		request.open(method.toUpperCase(), this.resolvedUrl())
-		request.send(body)
-
-		return response
+		return send<Data>(this)
 	}
 }
+
+export = Request

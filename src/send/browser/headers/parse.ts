@@ -1,9 +1,9 @@
-import sendr from '../../types'
+import sendr from '../../../../types'
 
 const LINE_SEPARATOR = /[\r\n]+/
 const LINE_MATCH = /^(.+?):\s+(.+)$/
 
-const getHeaders = (lines: string) => {
+const parseHeaders = (lines: string) => {
 	const headers: sendr.ResponseHeaders = {}
 
 	for (const line of lines.trim().split(LINE_SEPARATOR)) {
@@ -14,4 +14,4 @@ const getHeaders = (lines: string) => {
 	return headers
 }
 
-export default getHeaders
+export = parseHeaders

@@ -19,4 +19,4 @@ const resolveUrl = (url: string, params: sendr.Params) =>
 		})
 		.join('/')
 
-export default resolveUrl
+export = resolveUrl

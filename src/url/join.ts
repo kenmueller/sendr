@@ -12,4 +12,4 @@ const joinPaths = (...paths: sendr.Path[]) =>
 		})
 		.join('/')
 
-export default joinPaths
+export = joinPaths
