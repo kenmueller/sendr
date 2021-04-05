@@ -1,11 +1,12 @@
 import sendr from '../../types'
 import RequestOptions, { DEFAULT_REQUEST_OPTIONS } from './options'
-import isBrowser from '../is/browser'
 import joinPaths from '../url/join'
 import resolveUrl from '../url/resolve'
 import Send from '../send'
 
 class Request implements sendr.Request {
+	static send: Send
+
 	constructor(
 		readonly url: string,
 		readonly options: Readonly<RequestOptions> = DEFAULT_REQUEST_OPTIONS
@@ -13,7 +14,11 @@ class Request implements sendr.Request {
 
 	get resolvedUrl() {
 		const { params, query } = this.options
-		const url = new URL(this.url, isBrowser ? window.location.href : undefined)
+
+		const url = new URL(
+			this.url,
+			typeof window === 'undefined' ? undefined : window.location.href
+		)
 
 		for (const [name, value] of Object.entries(query))
 			if (!(value === null || value === undefined))
@@ -46,13 +51,7 @@ class Request implements sendr.Request {
 
 	readonly type = (type: sendr.ResponseType) => this.map({ type })
 
-	readonly send = <Data>() => {
-		const send: Send = isBrowser
-			? require('../send/browser')
-			: __non_webpack_require__('./send/node')
-
-		return send<Data>(this)
-	}
+	readonly send = <Data>() => Request.send<Data>(this)
 }
 
 export = Request
