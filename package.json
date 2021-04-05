@@ -1,7 +1,7 @@
 {
 	"name": "sendr",
-	"description": "Reusable & declarative queries",
-	"version": "1.0.2",
+	"description": "An isomorphic request library with reusable & declarative queries",
+	"version": "1.1.0",
 	"main": "lib/index.js",
 	"types": "types/index.d.ts",
 	"scripts": {
@@ -29,7 +29,10 @@
 		"progress",
 		"fetch",
 		"xmlhttprequest",
-		"http"
+		"http",
+		"isomorphic",
+		"browser",
+		"node"
 	],
 	"homepage": "https://github.com/kenmueller/sendr#readme",
 	"bugs": {

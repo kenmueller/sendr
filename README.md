@@ -1,6 +1,6 @@
 # sendr
 
-> Reusable & declarative queries
+> An isomorphic request library with reusable & declarative queries
 
 ## Install
 
@@ -8,11 +8,17 @@
 npm i sendr
 ```
 
+```html
+<script src="https://wzrd.in/standalone/sendr"></script>
+```
+
 ## Import
 
 ```ts
 import sendr from 'sendr'
-// or
+```
+
+```ts
 const sendr = require('sendr')
 ```
 
@@ -28,7 +34,7 @@ const { status, headers, data } = await sendr(todo)
 	.type('json')
 	.send()
 	.progress((current, total) => {
-		console.log(`${(current / total) * 100}%`)
+		console.log(`${((current / total) * 100).toFixed(2)}%`)
 	})
 
 console.log(data)
@@ -145,7 +151,7 @@ function progress(progress: sendr.Progress): sendr.FutureResponse<Data>
 const { data } = await sendr('/users/ken.png')
 	.send()
 	.progress((current, total) => {
-		console.log(`${(current / total) * 100}%`)
+		console.log(`${((current / total) * 100).toFixed(2)}%`)
 	})
 ```
 
