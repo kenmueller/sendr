@@ -7,17 +7,13 @@ const futureResponse = <Data>({ options }: Request, sender: XMLHttpRequest) => {
 	let progressListeners: sendr.Progress[] = options.progress
 
 	let timeout =
-		typeof options.timeout === 'number'
-			? setTimeout(() => sender.abort(), options.timeout)
-			: null
+		options.timeout === null
+			? null
+			: setTimeout(() => sender.abort(), options.timeout)
 
 	sender.addEventListener('progress', ({ loaded, total }) => {
 		const current = Math.min(loaded, total)
-
-		for (const progress of progressListeners)
-			try {
-				progress(current, total)
-			} catch {}
+		for (const progress of progressListeners) progress(current, total)
 	})
 
 	const response = new Promise((resolve, reject) => {
@@ -47,8 +43,9 @@ const futureResponse = <Data>({ options }: Request, sender: XMLHttpRequest) => {
 		after &&= Math.max(after, 0)
 
 		if (timeout !== null) clearTimeout(timeout)
-		if (typeof after === 'number')
-			timeout = setTimeout(() => sender.abort(), after)
+
+		if (after === undefined) return sender.abort()
+		if (after !== null) timeout = setTimeout(() => sender.abort(), after)
 
 		return response
 	}) as never

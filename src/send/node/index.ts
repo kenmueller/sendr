@@ -15,7 +15,7 @@ const send: Send = <Data>(request: Request) => {
 
 	const response = futureResponse<Data>(request, sender)
 
-	if (!(body === null || body === undefined)) sender.write(body)
+	if (body != null) sender.write(body)
 	sender.end()
 
 	return response

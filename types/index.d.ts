@@ -30,8 +30,9 @@ declare namespace sendr {
 
 	/**
 	 * Request timeout.
+	 * `null` terminates the timeout.
 	 */
-	export type Timeout = Milliseconds | null | undefined
+	export type Timeout = Milliseconds | null
 
 	/**
 	 * Path segment.
@@ -135,7 +136,7 @@ declare namespace sendr {
 
 		/**
 		 * Set a timeout for the request.
-		 * Set the value to `null` or `undefined` to remove the timeout.
+		 * Set the value to `null` to remove the timeout.
 		 * Causes the request to fail with code `aborted` after the timeout.
 		 */
 		abort(after: Timeout): Request
@@ -160,7 +161,7 @@ declare namespace sendr {
 
 		/**
 		 * Set a timeout for the request.
-		 * Set the value to `null` or `undefined` to remove the timeout.
+		 * Set the value to `null` to remove the timeout.
 		 * Causes the request to fail with code `aborted` after the timeout.
 		 */
 		abort(after: Timeout): FutureResponse<Data>
@@ -172,29 +173,55 @@ declare namespace sendr {
 		data: Data
 	}
 
-	export type SocketURL = `ws://${string}` | `wss://${string}`
+	export type Socket = socket.Socket
 
-	export interface Socket {
-		/**
-		 * Append to the socket URL.
-		 */
-		path(...paths: Path[]): Request
+	export namespace socket {
+		export type URL = `ws://${string}` | `wss://${string}`
 
-		/**
-		 * Add or remove URL parameters.
-		 * Set the value to `null` or `undefined` to remove them.
-		 */
-		params(params: Params): Request
+		export type Message = (message: string) => void
 
-		/**
-		 * Add or remove query parameters.
-		 * Set the value to `null` or `undefined` to remove them.
-		 */
-		query(query: Query): Request
+		export interface Socket {
+			/**
+			 * Append to the socket URL.
+			 */
+			path(...paths: Path[]): Socket
+
+			/**
+			 * Add or remove URL parameters.
+			 * Set the value to `null` or `undefined` to remove them.
+			 */
+			params(params: Params): Socket
+
+			/**
+			 * Add or remove query parameters.
+			 * Set the value to `null` or `undefined` to remove them.
+			 */
+			query(query: Query): Socket
+
+			/**
+			 * Open the socket connection.
+			 */
+			open(): Socket
+
+			/**
+			 * Send a message to the server.
+			 */
+			send(): Socket
+
+			/**
+			 * Listen for incoming messages.
+			 */
+			message(message: Message): Socket
+
+			/**
+			 * Close the socket connection.
+			 */
+			close(): void
+		}
 	}
 }
 
-declare function sendr(url: sendr.SocketURL): sendr.Socket
+declare function sendr(url: sendr.socket.URL): sendr.Socket
 declare function sendr(url: string): sendr.Request
 
 export = sendr

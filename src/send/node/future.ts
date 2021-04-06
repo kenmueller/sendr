@@ -9,9 +9,9 @@ const futureResponse = <Data>({ options }: Request, sender: ClientRequest) => {
 	let progressListeners: sendr.Progress[] = options.progress
 
 	let timeout =
-		typeof options.timeout === 'number'
-			? setTimeout(() => sender.destroy(), options.timeout)
-			: null
+		options.timeout === null
+			? null
+			: setTimeout(() => sender.destroy(), options.timeout)
 
 	const response = new Promise((resolve, reject) => {
 		sender.on('response', response => {
@@ -22,11 +22,7 @@ const futureResponse = <Data>({ options }: Request, sender: ClientRequest) => {
 
 			response.on('data', (chunk: Buffer) => {
 				const current = Math.min((data += chunk).length, total)
-
-				for (const progress of progressListeners)
-					try {
-						progress(current, total)
-					} catch {}
+				for (const progress of progressListeners) progress(current, total)
 			})
 
 			response.on('end', () => {
@@ -58,8 +54,9 @@ const futureResponse = <Data>({ options }: Request, sender: ClientRequest) => {
 		after &&= Math.max(after, 0)
 
 		if (timeout !== null) clearTimeout(timeout)
-		if (typeof after === 'number')
-			timeout = setTimeout(() => sender.destroy(), after)
+
+		if (after === undefined) return sender.destroy()
+		if (after !== null) timeout = setTimeout(() => sender.destroy(), after)
 
 		return response
 	}) as never

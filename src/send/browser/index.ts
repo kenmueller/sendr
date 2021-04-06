@@ -13,8 +13,7 @@ const send: Send = <Data>(request: Request) => {
 	sender.responseType = filterType(type)
 
 	for (const [name, value] of Object.entries(headers))
-		if (!(value === null || value === undefined))
-			sender.setRequestHeader(name, value.toString())
+		if (value != null) sender.setRequestHeader(name, value.toString())
 
 	const response = futureResponse<Data>(request, sender)
 

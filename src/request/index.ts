@@ -21,8 +21,7 @@ class Request implements sendr.Request {
 		)
 
 		for (const [name, value] of Object.entries(query))
-			if (!(value === null || value === undefined))
-				url.searchParams.append(name, value.toString())
+			if (value != null) url.searchParams.append(name, value.toString())
 
 		return resolveUrl(url.href, params)
 	}
