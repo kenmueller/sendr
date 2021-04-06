@@ -170,3 +170,18 @@ function abort(): void
 
 sendr('/users/ken.png').send().abort()
 ```
+
+### `abort` (timeout)
+
+Set a timeout for the request. Set the value to `null` or `undefined` to remove the timeout. Causes the request to fail with code `aborted` after the timeout.
+
+```ts
+function abort(after: sendr.Timeout): sendr.Request
+function abort(after: sendr.Timeout): sendr.FutureResponse<Data>
+
+sendr('/users/ken.png')
+	.abort(50) // Timeout of 50ms
+	.send()
+	.abort(null) // Remove the timeout
+	.abort(300) // Set a new timeout of 300ms
+```

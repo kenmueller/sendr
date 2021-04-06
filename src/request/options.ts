@@ -9,6 +9,7 @@ export default interface RequestOptions {
 	body: sendr.Body
 	type: sendr.ResponseType
 	progress: sendr.Progress[]
+	timeout: sendr.Timeout
 }
 
 export const DEFAULT_REQUEST_OPTIONS: RequestOptions = {
@@ -19,5 +20,6 @@ export const DEFAULT_REQUEST_OPTIONS: RequestOptions = {
 	headers: {},
 	body: null,
 	type: 'text',
-	progress: []
+	progress: [],
+	timeout: null
 }

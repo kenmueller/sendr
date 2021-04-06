@@ -24,6 +24,16 @@ declare namespace sendr {
 		| 'patch'
 
 	/**
+	 * A number representing milliseconds.
+	 */
+	export type Milliseconds = number
+
+	/**
+	 * Request timeout.
+	 */
+	export type Timeout = Milliseconds | null | undefined
+
+	/**
 	 * Path segment.
 	 */
 	export type Path = Value
@@ -124,6 +134,13 @@ declare namespace sendr {
 		progress(progress: Progress): Request
 
 		/**
+		 * Set a timeout for the request.
+		 * Set the value to `null` or `undefined` to remove the timeout.
+		 * Causes the request to fail with code `aborted` after the timeout.
+		 */
+		abort(after: Timeout): Request
+
+		/**
 		 * Send the request.
 		 */
 		send<Data>(): FutureResponse<Data>
@@ -140,6 +157,13 @@ declare namespace sendr {
 		 * Causes the request to fail with code `aborted`.
 		 */
 		abort(): void
+
+		/**
+		 * Set a timeout for the request.
+		 * Set the value to `null` or `undefined` to remove the timeout.
+		 * Causes the request to fail with code `aborted` after the timeout.
+		 */
+		abort(after: Timeout): FutureResponse<Data>
 	}
 
 	export interface Response<Data> {
@@ -147,8 +171,30 @@ declare namespace sendr {
 		headers: ResponseHeaders
 		data: Data
 	}
+
+	export type SocketURL = `ws://${string}` | `wss://${string}`
+
+	export interface Socket {
+		/**
+		 * Append to the socket URL.
+		 */
+		path(...paths: Path[]): Request
+
+		/**
+		 * Add or remove URL parameters.
+		 * Set the value to `null` or `undefined` to remove them.
+		 */
+		params(params: Params): Request
+
+		/**
+		 * Add or remove query parameters.
+		 * Set the value to `null` or `undefined` to remove them.
+		 */
+		query(query: Query): Request
+	}
 }
 
+declare function sendr(url: sendr.SocketURL): sendr.Socket
 declare function sendr(url: string): sendr.Request
 
 export = sendr

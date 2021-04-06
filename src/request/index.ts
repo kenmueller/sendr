@@ -54,6 +54,11 @@ class Request implements sendr.Request {
 	readonly progress = (progress: sendr.Progress) =>
 		this.map({ progress: [...this.options.progress, progress] })
 
+	readonly abort = (after: sendr.Timeout) =>
+		this.map({
+			timeout: typeof after === 'number' ? Math.max(after, 0) : after
+		})
+
 	readonly send = <Data>() => Request.send<Data>(this)
 }
 

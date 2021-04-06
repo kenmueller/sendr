@@ -3,8 +3,13 @@ import Request from '../../request'
 import parseHeaders from './headers/parse'
 import Error from '../../error'
 
-const futureResponse = <Data>(request: Request, sender: XMLHttpRequest) => {
-	const progressListeners: sendr.Progress[] = [...request.options.progress]
+const futureResponse = <Data>({ options }: Request, sender: XMLHttpRequest) => {
+	let progressListeners: sendr.Progress[] = options.progress
+
+	let timeout =
+		typeof options.timeout === 'number'
+			? setTimeout(() => sender.abort(), options.timeout)
+			: null
 
 	sender.addEventListener('progress', ({ loaded, total }) => {
 		const current = Math.min(loaded, total)
@@ -34,13 +39,19 @@ const futureResponse = <Data>(request: Request, sender: XMLHttpRequest) => {
 	}) as sendr.FutureResponse<Data>
 
 	response.progress = progress => {
-		progressListeners.push(progress)
+		progressListeners = [...progressListeners, progress]
 		return response
 	}
 
-	response.abort = () => {
-		sender.abort()
-	}
+	response.abort = ((after?: sendr.Timeout) => {
+		after &&= Math.max(after, 0)
+
+		if (timeout !== null) clearTimeout(timeout)
+		if (typeof after === 'number')
+			timeout = setTimeout(() => sender.abort(), after)
+
+		return response
+	}) as never
 
 	return response
 }

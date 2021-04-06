@@ -5,8 +5,13 @@ import Request from '../../request'
 import parseData from './data/parse'
 import Error from '../../error'
 
-const futureResponse = <Data>(request: Request, sender: ClientRequest) => {
-	const progressListeners: sendr.Progress[] = [...request.options.progress]
+const futureResponse = <Data>({ options }: Request, sender: ClientRequest) => {
+	let progressListeners: sendr.Progress[] = options.progress
+
+	let timeout =
+		typeof options.timeout === 'number'
+			? setTimeout(() => sender.destroy(), options.timeout)
+			: null
 
 	const response = new Promise((resolve, reject) => {
 		sender.on('response', response => {
@@ -29,7 +34,7 @@ const futureResponse = <Data>(request: Request, sender: ClientRequest) => {
 					resolve({
 						status: response.statusCode ?? 200,
 						headers: response.headers as sendr.ResponseHeaders,
-						data: parseData(data, request.options.type) as Data
+						data: parseData(data, options.type) as Data
 					})
 				} catch (error) {
 					reject(error)
@@ -45,13 +50,19 @@ const futureResponse = <Data>(request: Request, sender: ClientRequest) => {
 	}) as sendr.FutureResponse<Data>
 
 	response.progress = progress => {
-		progressListeners.push(progress)
+		progressListeners = [...progressListeners, progress]
 		return response
 	}
 
-	response.abort = () => {
-		sender.destroy()
-	}
+	response.abort = ((after?: sendr.Timeout) => {
+		after &&= Math.max(after, 0)
+
+		if (timeout !== null) clearTimeout(timeout)
+		if (typeof after === 'number')
+			timeout = setTimeout(() => sender.destroy(), after)
+
+		return response
+	}) as never
 
 	return response
 }
