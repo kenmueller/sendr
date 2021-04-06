@@ -3,21 +3,23 @@ import Request from '../../request'
 import filterType from './type/filter'
 import futureResponse from './future'
 
-const send: Send = <Data>({ resolvedUrl: url, options }: Request) => {
+const send: Send = <Data>(request: Request) => {
+	const { resolvedUrl: url, options } = request
 	const { method, credentials, headers, body, type } = options
-	const request = new XMLHttpRequest()
 
-	request.withCredentials = credentials
-	request.responseType = filterType(type)
+	const sender = new XMLHttpRequest()
+
+	sender.withCredentials = credentials
+	sender.responseType = filterType(type)
 
 	for (const [name, value] of Object.entries(headers))
 		if (!(value === null || value === undefined))
-			request.setRequestHeader(name, value.toString())
+			sender.setRequestHeader(name, value.toString())
 
-	const response = futureResponse<Data>(request)
+	const response = futureResponse<Data>(request, sender)
 
-	request.open(method.toUpperCase(), url)
-	request.send(body)
+	sender.open(method.toUpperCase(), url)
+	sender.send(body)
 
 	return response
 }

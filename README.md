@@ -146,12 +146,18 @@ const { data } = await sendr('/users/ken.png').send()
 Listen for the progress of the request.
 
 ```ts
+function progress(progress: sendr.Progress): sendr.Request
 function progress(progress: sendr.Progress): sendr.FutureResponse<Data>
 
 const { data } = await sendr('/users/ken.png')
+	.progress((current, total) => {
+		// Before send
+		console.log(`Progress #1: ${((current / total) * 100).toFixed(2)}%`)
+	})
 	.send()
 	.progress((current, total) => {
-		console.log(`${((current / total) * 100).toFixed(2)}%`)
+		// After send
+		console.log(`Progress #2: ${((current / total) * 100).toFixed(2)}%`)
 	})
 ```
 

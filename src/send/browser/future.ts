@@ -1,11 +1,12 @@
 import sendr from '../../../types'
+import Request from '../../request'
 import parseHeaders from './headers/parse'
 import Error from '../../error'
 
-const futureResponse = <Data>(request: XMLHttpRequest) => {
-	const progressListeners: sendr.Progress[] = []
+const futureResponse = <Data>(request: Request, sender: XMLHttpRequest) => {
+	const progressListeners: sendr.Progress[] = [...request.options.progress]
 
-	request.addEventListener('progress', ({ loaded, total }) => {
+	sender.addEventListener('progress', ({ loaded, total }) => {
 		const current = Math.min(loaded, total)
 
 		for (const progress of progressListeners)
@@ -15,19 +16,19 @@ const futureResponse = <Data>(request: XMLHttpRequest) => {
 	})
 
 	const response = new Promise((resolve, reject) => {
-		request.addEventListener('load', () => {
+		sender.addEventListener('load', () => {
 			resolve({
-				status: request.status,
-				headers: parseHeaders(request.getAllResponseHeaders()),
-				data: request.response
+				status: sender.status,
+				headers: parseHeaders(sender.getAllResponseHeaders()),
+				data: sender.response
 			})
 		})
 
-		request.addEventListener('error', () => {
+		sender.addEventListener('error', () => {
 			reject(new Error('unknown', 'An unknown error occurred'))
 		})
 
-		request.addEventListener('abort', () => {
+		sender.addEventListener('abort', () => {
 			reject(new Error('aborted', 'Aborted'))
 		})
 	}) as sendr.FutureResponse<Data>
@@ -38,7 +39,7 @@ const futureResponse = <Data>(request: XMLHttpRequest) => {
 	}
 
 	response.abort = () => {
-		request.abort()
+		sender.abort()
 	}
 
 	return response

@@ -1,17 +1,15 @@
 import { ClientRequest } from 'http'
 
 import sendr from '../../../types'
+import Request from '../../request'
 import parseData from './data/parse'
 import Error from '../../error'
 
-const futureResponse = <Data>(
-	request: ClientRequest,
-	type: sendr.ResponseType
-) => {
-	const progressListeners: sendr.Progress[] = []
+const futureResponse = <Data>(request: Request, sender: ClientRequest) => {
+	const progressListeners: sendr.Progress[] = [...request.options.progress]
 
 	const response = new Promise((resolve, reject) => {
-		request.on('response', response => {
+		sender.on('response', response => {
 			const length = response.headers['content-length']
 			const total = length ? parseInt(length) : 0
 
@@ -31,7 +29,7 @@ const futureResponse = <Data>(
 					resolve({
 						status: response.statusCode ?? 200,
 						headers: response.headers as sendr.ResponseHeaders,
-						data: parseData(data, type) as Data
+						data: parseData(data, request.options.type) as Data
 					})
 				} catch (error) {
 					reject(error)
@@ -39,9 +37,9 @@ const futureResponse = <Data>(
 			})
 		})
 
-		request.on('error', reject)
+		sender.on('error', reject)
 
-		request.on('abort', () => {
+		sender.on('abort', () => {
 			reject(new Error('aborted', 'Aborted'))
 		})
 	}) as sendr.FutureResponse<Data>
@@ -52,7 +50,7 @@ const futureResponse = <Data>(
 	}
 
 	response.abort = () => {
-		request.destroy()
+		sender.destroy()
 	}
 
 	return response

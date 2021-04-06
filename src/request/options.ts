@@ -8,6 +8,7 @@ export default interface RequestOptions {
 	headers: sendr.RequestHeaders
 	body: sendr.Body
 	type: sendr.ResponseType
+	progress: sendr.Progress[]
 }
 
 export const DEFAULT_REQUEST_OPTIONS: RequestOptions = {
@@ -17,5 +18,6 @@ export const DEFAULT_REQUEST_OPTIONS: RequestOptions = {
 	credentials: false,
 	headers: {},
 	body: null,
-	type: 'text'
+	type: 'text',
+	progress: []
 }

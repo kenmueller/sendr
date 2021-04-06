@@ -119,6 +119,11 @@ declare namespace sendr {
 		type(type: ResponseType): Request
 
 		/**
+		 * Listen for the progress of the request.
+		 */
+		progress(progress: Progress): Request
+
+		/**
 		 * Send the request.
 		 */
 		send<Data>(): FutureResponse<Data>

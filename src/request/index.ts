@@ -51,6 +51,9 @@ class Request implements sendr.Request {
 
 	readonly type = (type: sendr.ResponseType) => this.map({ type })
 
+	readonly progress = (progress: sendr.Progress) =>
+		this.map({ progress: [...this.options.progress, progress] })
+
 	readonly send = <Data>() => Request.send<Data>(this)
 }
 

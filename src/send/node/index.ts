@@ -1,24 +1,22 @@
-import https from 'https'
-import http from 'http'
-
 import Send from '..'
 import Request from '../../request'
 import filterHeaders from './headers/filter'
+import getClient from './client'
 import futureResponse from './future'
 
-const send: Send = <Data>({ resolvedUrl: url, options }: Request) => {
-	const client = new URL(url).protocol === 'https:' ? https : http
+const send: Send = <Data>(request: Request) => {
+	const { resolvedUrl: url, options } = request
+	const { method, headers, body } = options
 
-	const { method, headers, body, type } = options
-	const request = client.request(url, {
+	const sender = getClient(url).request(url, {
 		method: method.toUpperCase(),
 		headers: filterHeaders(headers)
 	})
 
-	const response = futureResponse<Data>(request, type)
+	const response = futureResponse<Data>(request, sender)
 
-	if (!(body === null || body === undefined)) request.write(body)
-	request.end()
+	if (!(body === null || body === undefined)) sender.write(body)
+	sender.end()
 
 	return response
 }
