@@ -3,7 +3,7 @@ declare namespace sendr {
 		toString(): string
 	}
 
-	export type ErrorCode = 'unknown' | 'aborted'
+	export type ErrorCode = 'unknown' | 'aborted' | 'closed' | 'state'
 
 	export class Error extends globalThis.Error {
 		code: ErrorCode
@@ -178,7 +178,15 @@ declare namespace sendr {
 	export namespace socket {
 		export type URL = `ws://${string}` | `wss://${string}`
 
-		export type Message = (message: string) => void
+		export type Message = string | ArrayBuffer | Blob
+		export type OnMessage = (message: Message) => void
+
+		export type OnOpen = () => void
+		export type OnClose = (code: number, reason: string) => void
+
+		export type OnError = () => void
+
+		export type State = 'connecting' | 'open' | 'closing' | 'closed'
 
 		export interface Socket {
 			/**
@@ -199,24 +207,71 @@ declare namespace sendr {
 			query(query: Query): Socket
 
 			/**
-			 * Open the socket connection.
+			 * Listen for incoming messages.
 			 */
-			open(): Socket
+			message(message: OnMessage): Socket
 
 			/**
-			 * Send a message to the server.
+			 * Open the socket connection.
 			 */
-			send(): Socket
+			open(): OpenSocket
+
+			/**
+			 * Listen for when the socket opens.
+			 */
+			open(open: OnOpen): Socket
+
+			/**
+			 * Listen for when the socket closes.
+			 */
+			close(close: OnClose): Socket
+
+			/**
+			 * Listen for errors.
+			 */
+			error(error: OnError): Socket
+		}
+
+		export interface OpenSocket {
+			/**
+			 * Get the internal `WebSocket` instance.
+			 */
+			internal(): WebSocket
+
+			/**
+			 * Get the socket state.
+			 */
+			state(): State
 
 			/**
 			 * Listen for incoming messages.
 			 */
-			message(message: Message): Socket
+			message(message: OnMessage): OpenSocket
+
+			/**
+			 * Send a message to the server.
+			 */
+			send(message: Message): OpenSocket
+
+			/**
+			 * Listen for when the socket opens.
+			 */
+			open(open: OnOpen): OpenSocket
 
 			/**
 			 * Close the socket connection.
 			 */
 			close(): void
+
+			/**
+			 * Listen for when the socket closes.
+			 */
+			close(close: OnClose): OpenSocket
+
+			/**
+			 * Listen for errors.
+			 */
+			error(error: OnError): OpenSocket
 		}
 	}
 }

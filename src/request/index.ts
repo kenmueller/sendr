@@ -13,17 +13,7 @@ class Request implements sendr.Request {
 	) {}
 
 	get resolvedUrl() {
-		const { params, query } = this.options
-
-		const url = new URL(
-			this.url,
-			typeof window === 'undefined' ? undefined : window.location.href
-		)
-
-		for (const [name, value] of Object.entries(query))
-			if (value != null) url.searchParams.append(name, value.toString())
-
-		return resolveUrl(url.href, params)
+		return resolveUrl(this.url, this.options)
 	}
 
 	readonly map = (options: Partial<RequestOptions>) =>
