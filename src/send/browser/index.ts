@@ -18,7 +18,7 @@ const send: Send = <Data>(request: Request) => {
 	const response = futureResponse<Data>(request, sender)
 
 	sender.open(method.toUpperCase(), url)
-	sender.send(body)
+	sender.send(body as BodyInit | Document | null | undefined)
 
 	return response
 }

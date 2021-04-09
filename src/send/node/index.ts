@@ -15,7 +15,11 @@ const send: Send = <Data>(request: Request) => {
 
 	const response = futureResponse<Data>(request, sender)
 
-	if (body != null) sender.write(body)
+	if (body != null)
+		typeof (body as NodeJS.ReadableStream).pipe === 'function'
+			? (body as NodeJS.ReadableStream).pipe(sender)
+			: sender.write(body)
+
 	sender.end()
 
 	return response

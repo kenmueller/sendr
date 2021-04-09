@@ -67,7 +67,12 @@ declare namespace sendr {
 	/**
 	 * The request body.
 	 */
-	export type Body = BodyInit | Document | null | undefined
+	export type Body =
+		| BodyInit
+		| Document
+		| NodeJS.ReadableStream
+		| null
+		| undefined
 
 	/**
 	 * The response type.
