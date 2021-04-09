@@ -1,7 +1,7 @@
 {
 	"name": "sendr",
 	"description": "An isomorphic request library with reusable & declarative queries",
-	"version": "1.1.1",
+	"version": "1.2.0",
 	"main": "lib/main/node.js",
 	"browser": "lib/main/browser.js",
 	"types": "types/index.d.ts",
@@ -20,7 +20,7 @@
 		"eslint-plugin-prettier": "^3.3.1",
 		"prettier": "^2.2.1",
 		"ts-node-dev": "^1.1.6",
-		"typescript": "^4.2.3"
+		"typescript": "^4.2.4"
 	},
 	"keywords": [
 		"sendr",
