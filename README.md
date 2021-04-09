@@ -9,7 +9,7 @@ npm i sendr
 ```
 
 ```html
-<script src="https://wzrd.in/standalone/sendr@1.1.1"></script>
+<script src="https://wzrd.in/standalone/sendr@1.2.1"></script>
 ```
 
 ## Import
